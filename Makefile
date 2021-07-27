@@ -19,7 +19,7 @@ event_manager_trustzone: check_port
 	docker run --rm -it -v $(TZ_VOLUME):/opt/optee -e PORT=$(PORT) -p $(PORT):1236 --name event-manager-$(PORT) $(TRUSTZONE_IMAGE)
 
 event_manager_sancus: check_port check_device
-	docker run --rm -d -p $(PORT):$(PORT) --device=$(UART_IP_DEV) --name event-manager-$(PORT) $(SANCUS_IMAGE) reactive-uart2ip -p $(PORT) -d $(UART_IP_DEV)
+	docker run --rm -d --network=host --device=$(UART_IP_DEV) --name event-manager-$(PORT) $(SANCUS_IMAGE) reactive-uart2ip -p $(PORT) -d $(UART_IP_DEV)
 	(cd /tmp && sancus-loader -device $(DEVICE) $(SANCUS_EM))
 	screen -S sancus $(DEVICE) 57600
 	docker stop event-manager-$(PORT) 2> /dev/null || true
