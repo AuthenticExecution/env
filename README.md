@@ -9,6 +9,8 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 
 - A Sancus board must be connected to the machine through UART
 - The correct [Sancus image](sancus/sancus128.mcs) must be flashed in the board in advance
+- How to close the `screen` session of the Sancus Event Manager: press `CTRL-A`, then `\`, then `y`
+  - Do **not** stop the loading process of the EM with CTRL-C, otherwise the board would need a manual reset.
 
 ### SGX
 
@@ -18,7 +20,7 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### TrustZone
 
 - OPTEE OS must be installed on the machine. [More info](trustzone/README.md)
-- The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world. In addition, to stop the container one must enter the escape sequence "qqqq"
+- The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world. In addition, to stop the container one must enter the escape sequence `qqqq`
   - It is not possible to stop the container using CTRL-C
 
 ## Event managers
@@ -45,3 +47,34 @@ The container for `reactive-tools` can be launched with `make reactive-tools`
 ## Run demos
 
 - Run a terminal for each event manager, plus an additional terminal for `reactive-tools`.
+
+### Commands
+
+```bash
+### deploy a configuration ###
+# Make sure you are under the project folder, and all the elements are on the same folder (JSON descriptor + modules)
+REACTIVE-TOOLS --verbose deploy <in_descr> --result <out_descr>
+
+# From now on, we will use the <out_descr> file generated during deployment.
+# It will be updated automatically after each command
+
+### attest the modules ###
+REACTIVE-TOOLS --verbose attest <out_descr>
+
+### create connections between the modules ###
+REACTIVE-TOOLS --verbose connect <out_descr>
+
+# Now the deployment is complete. We can call entry points, or trigger output or request events
+# Of course according to the implementation of the modules and the deployment descriptor
+
+### call an entry point ###
+REACTIVE-TOOLS --verbose call <out_descr> --module <module> --entry <entry_name_or_id> [--arg <arg_hex>]
+
+### trigger an `output` event ###
+# only for `direct` connections
+REACTIVE-TOOLS --verbose output <out_descr> --connection <conn_name_or_id> [--arg <arg_hex>]
+
+### trigger a `request` event ###
+# only for `direct` connections, and for supported modules (native or SGX)
+REACTIVE-TOOLS --verbose request <out_descr> --connection <conn_name_or_id> [--arg <arg_hex>]
+```
