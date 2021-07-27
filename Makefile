@@ -3,6 +3,7 @@ SANCUS_IMAGE     = gianlu33/reactive-uart2ip:latest
 TRUSTZONE_IMAGE  = gianlu33/optee-deps:latest
 
 SANCUS_EM       ?= $(shell realpath sancus/reactive.elf)
+SGX_DEVICE      ?= /dev/isgx
 AESM_CLIENT     ?= gianlu33/aesm-client:latest
 TZ_VOLUME       ?= /opt/optee
 
@@ -12,7 +13,7 @@ event_manager_native: check_port
 	docker run --rm --network=host -e EM_PORT=$(PORT) -e EM_LOG=info -e EM_THREADS=16 -e EM_PERIODIC_TASKS=false -e EM_SGX=false --name event-manager-$(PORT) $(SGX_IMAGE)
 
 event_manager_sgx: check_port
-	docker run --rm --network=host -e EM_PORT=$(PORT) -e EM_LOG=info -e EM_THREADS=16 -e EM_PERIODIC_TASKS=false -e EM_SGX=true --name event-manager-$(PORT) $(SGX_IMAGE)
+	docker run --rm --network=host --device $(SGX_DEVICE) -v /var/run/aesmd/:/var/run/aesmd/ -e EM_PORT=$(PORT) -e EM_LOG=info -e EM_THREADS=16 -e EM_PERIODIC_TASKS=false -e EM_SGX=true --name event-manager-$(PORT) $(SGX_IMAGE)
 
 event_manager_trustzone: check_port
 	docker run --rm -it -v $(TZ_VOLUME):/opt/optee -e PORT=$(PORT) -p $(PORT):1236 --name event-manager-$(PORT) $(TRUSTZONE_IMAGE)
