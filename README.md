@@ -23,6 +23,12 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 - The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world. In addition, to stop the container one must enter the escape sequence `qqqq`
   - It is not possible to stop the container using CTRL-C
 
+### Native
+
+This is a "native" Event Manager running as a Linux process without TEE
+protection.
+
+
 ## Event managers
 
 The Makefile contains targets to run the event managers of different types (SGX, native, Sancus, TrustZone)
