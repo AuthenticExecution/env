@@ -62,7 +62,7 @@ make attest_manager MANAGER_HOST=<host> MANAGER_PORT=<port>
 # this target uses the `manager/init_sgx.yaml` file. Check above for more info
 make init_manager
 
-# Now the AM is up and running. A `reactive-tools` deployment can be done.
+# Now the AM is up and running, waiting for commands.
 ```
 
 ## Integration in reactive-tools

@@ -30,6 +30,7 @@ The Makefile contains targets to run the event managers of different types (SGX,
 - run `make event_manager_{sgx,native,sancus,trustzone}` to run the event manager of a specific type. Arguments:
   - `PORT=<port>` for all the targets, to specify the port the event manager listens to (e.g., `5000`)
   - `DEVICE=<device>` only for Sancus, to specify the UART device (e.g., `/dev/ttyUSB8`)
+  - `TZ_VOLUME=<volume>` only for TrustZone, to specify the path of the OPTEE installation
 
 ## Attestation Manager
 
