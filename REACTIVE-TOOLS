@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker run --rm --network=host -v $(pwd):/usr/src/app/ -v /usr/local/cargo/git:/usr/local/cargo/git -v /usr/local/cargo/registry:/usr/local/cargo/registry gianlu33/reactive-tools reactive-tools $@

@@ -19,7 +19,7 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 
 ### TrustZone
 
-- OPTEE OS must be installed on the machine. [More info](trustzone/README.md)
+- Our modified OPTEE OS must be installed on the machine. [More info](trustzone/README.md)
 - The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world. In addition, to stop the container one must enter the escape sequence `qqqq`
   - It is not possible to stop the container using CTRL-C
 
@@ -31,6 +31,13 @@ The Makefile contains targets to run the event managers of different types (SGX,
   - `PORT=<port>` for all the targets, to specify the port the event manager listens to (e.g., `5000`)
   - `DEVICE=<device>` only for Sancus, to specify the UART device (e.g., `/dev/ttyUSB8`)
 
+## Attestation Manager
+
+The Attestation Manager can be optionally integrated in an Authentic Execution deployment. It is a component (SGX or native) responsible for the attestation of all the other modules
+  - If the AM is running, it can be used by specifying the flag `--manager` in a `reactive-tools` command
+
+[More info](manager/README.md)
+
 ## Reactive-tools
 
 The container for `reactive-tools` can be launched with `make reactive-tools`
@@ -38,7 +45,7 @@ The container for `reactive-tools` can be launched with `make reactive-tools`
   - Alternatively, the `REACTIVE-TOOLS` script can be used to automatically run the container and execute the `reactive-tools` script. The current working directory is automatically mounted to the container. Usage:
   ```bash
   # install the script
-  sudo cp REACTIVE-TOOLS /bin
+  sudo cp exec/REACTIVE-TOOLS /bin
 
   # run reactive-tools directly (i.e., "hiding" the fact that a new container is launched)
   REACTIVE-TOOLS --verbose deploy <descriptor>
