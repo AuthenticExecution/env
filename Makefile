@@ -1,18 +1,23 @@
 SGX_IMAGE           = gianlu33/reactive-event-manager:latest
 SANCUS_IMAGE        = gianlu33/reactive-uart2ip:latest
 TRUSTZONE_IMAGE     = gianlu33/optee-deps:latest
+AESM_CLIENT_IMAGE   = gianlu33/aesm-client:latest
 MANAGER_IMAGE       = gianlu33/attestation-manager
-AESM_CLIENT_IMAGE   = gianlu33/aesm-client
-
-MANAGER_TAG        ?= native
-MANAGER_HOST       ?= localhost
-MANAGER_PORT       ?= 1234
 
 SANCUS_EM          ?= $(shell realpath sancus/reactive.elf)
 SGX_DEVICE         ?= /dev/isgx
 TZ_VOLUME          ?= /opt/optee
-
 UART_IP_DEV        ?= $(shell echo $(DEVICE) | perl -pe 's/(\d+)(?!.*\d+)/$$1+1/e')
+
+TAG                ?= native
+MANAGER_HOST       ?= localhost
+MANAGER_PORT       ?= 1234
+
+ifeq ($(TAG), sgx)
+	MANAGER_FLAGS = -v /var/run/aesmd/:/var/run/aesmd --device $(SGX_DEVICE)
+else
+	MANAGER_FLAGS =
+endif
 
 event_manager_native: check_port
 	docker run --rm --network=host -e EM_PORT=$(PORT) -e EM_LOG=info -e EM_THREADS=16 -e EM_PERIODIC_TASKS=false -e EM_SGX=false --name event-manager-$(PORT) $(SGX_IMAGE)
@@ -30,28 +35,27 @@ event_manager_sancus: check_port check_device
 	docker stop event-manager-$(PORT) 2> /dev/null || true
 
 attestation_manager:
-	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --device /dev/isgx --name attestation-manager $(MANAGER_IMAGE):$(MANAGER_TAG)
-
-attestation_manager_block: attestation_manager
-	docker logs -f attestation-manager
-	docker stop attestation-manager
+	docker run --rm --detach --network=host $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
 
 get_manager_sig:
-	@docker run --rm -it --detach --name tmp_container $(MANAGER_IMAGE):$(MANAGER_TAG) bash
+	@docker run --rm -it --detach --name tmp_container $(MANAGER_IMAGE):sgx bash
 	@docker cp tmp_container:/home/enclave/enclave.sig manager/enclave.sig
 	@docker stop tmp_container
 
 reset_manager:
 	attman-cli --config manager/config.yaml --request reset
 
-attest_manager: get_manager_sig
+attest_manager:
 	python3 manager/run_attester.py $(MANAGER_HOST) $(MANAGER_PORT)
 
 init_manager:
 	attman-cli --config manager/config.yaml --request init-sgx --data manager/init_sgx.yaml
 
+stop_manager:
+	docker stop attestation-manager
+
 aesm_client:
-	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --name aesm-client $(AESM_CLIENT):$(TAG) >/dev/null 2>&1 || true
+	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --name aesm-client $(AESM_CLIENT) >/dev/null 2>&1 || true
 
 clean:
 	docker stop $(shell docker ps -q --filter name=event-manager-*) 2> /dev/null || true
