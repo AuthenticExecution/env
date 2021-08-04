@@ -66,7 +66,7 @@ install:
 	sudo cp exec/* /bin
 
 check_port:
-	@test $(PORT) || (echo "PORT variable not defined. Run make <target> PORT=<port>" && return 1)
+	@test $(PORT) || (echo "PORT variable not defined. This is the TCP/IP port the Event Manager listens on. Run make <target> PORT=<port>" && return 1)
 
 check_device:
 	@test $(DEVICE) || (echo "DEVICE variable not defined. Run make <target> DEVICE=<device>" && return 1)
