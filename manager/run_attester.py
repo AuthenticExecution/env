@@ -2,7 +2,9 @@ import subprocess
 import sys
 import yaml
 
-ATTESTER = "sgx-attester"
+ATTESTER    = "sgx-attester"
+DEFAULT_KEY = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+ATTMAN_SGX  = "gianlu33/attestation-manager:sgx"
 
 enclave_host = sys.argv[1] if len(sys.argv) > 1 else "localhost"
 enclave_port = sys.argv[2] if len(sys.argv) > 2 else "1234"
@@ -39,6 +41,20 @@ def update_config(key):
         yaml.dump(conf, f)
 
 
+def is_fake():
+    cmd = "docker container ls --filter name=attestation-manager".split()
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, _ = proc.communicate()
+
+    return ATTMAN_SGX not in str(out)
+
+
 if __name__ == "__main__":
-    key = attest()
+    if is_fake():
+        print("Skipping SGX attestation")
+        key = DEFAULT_KEY
+    else:
+        key = attest()
+        print(key)
+
     update_config(key)
