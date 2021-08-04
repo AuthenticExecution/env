@@ -35,7 +35,7 @@ event_manager_sancus: check_port check_device
 	docker stop event-manager-$(PORT) 2> /dev/null || true
 
 attestation_manager:
-	docker run --rm --detach --network=host $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
+	docker run --rm --detach -p $(MANAGER_PORT):1234 $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
 
 get_manager_sig:
 	@docker run --rm -it --detach --name tmp_container $(MANAGER_IMAGE):sgx bash
