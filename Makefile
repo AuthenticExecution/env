@@ -1,10 +1,9 @@
 SGX_IMAGE           = gianlu33/reactive-event-manager:latest
-SANCUS_IMAGE        = gianlu33/reactive-uart2ip:latest
+SANCUS_IMAGE        = gianlu33/event_manager_sancus:latest
 TRUSTZONE_IMAGE     = gianlu33/optee-deps:latest
 AESM_CLIENT_IMAGE   = gianlu33/aesm-client:latest
 MANAGER_IMAGE       = gianlu33/attestation-manager
 
-SANCUS_EM          ?= $(shell realpath sancus/reactive.elf)
 SGX_DEVICE         ?= /dev/isgx
 TZ_VOLUME          ?= /opt/optee
 UART_IP_DEV        ?= $(shell echo $(DEVICE) | perl -pe 's/(\d+)(?!.*\d+)/$$1+1/e')
@@ -29,10 +28,7 @@ event_manager_trustzone: check_port
 	docker run --rm -it -v $(TZ_VOLUME):/opt/optee -e PORT=$(PORT) -p $(PORT):1236 --name event-manager-$(PORT) $(TRUSTZONE_IMAGE)
 
 event_manager_sancus: check_port check_device
-	docker run --rm -d --network=host --device=$(UART_IP_DEV) --name event-manager-$(PORT) $(SANCUS_IMAGE) reactive-uart2ip -p $(PORT) -d $(UART_IP_DEV)
-	(cd /tmp && sancus-loader -device $(DEVICE) $(SANCUS_EM))
-	screen -S sancus $(DEVICE) 57600
-	docker stop event-manager-$(PORT) 2> /dev/null || true
+	docker run -it -p $(PORT):$(PORT) -e PORT=$(PORT) -e DEVICE=$(DEVICE) --device=$(DEVICE) --device=$(DEVICE_NET) --device=$(UART_IP_DEV) --rm --name event-manager-$(PORT) $(SANCUS_IMAGE)
 
 attestation_manager:
 	docker run --rm --detach -p $(MANAGER_PORT):1234 $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
