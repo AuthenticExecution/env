@@ -1,5 +1,5 @@
 SGX_IMAGE           = gianlu33/reactive-event-manager:latest
-SANCUS_IMAGE        = gianlu33/event_manager_sancus:latest
+SANCUS_IMAGE        = gianlu33/event-manager-sancus:latest
 TRUSTZONE_IMAGE     = gianlu33/optee-deps:latest
 AESM_CLIENT_IMAGE   = gianlu33/aesm-client:latest
 MANAGER_IMAGE       = gianlu33/attestation-manager
@@ -28,7 +28,7 @@ event_manager_trustzone: check_port
 	docker run --rm -it -v $(TZ_VOLUME):/opt/optee -e PORT=$(PORT) -p $(PORT):1236 --name event-manager-$(PORT) $(TRUSTZONE_IMAGE)
 
 event_manager_sancus: check_port check_device
-	docker run -it -p $(PORT):$(PORT) -e PORT=$(PORT) -e DEVICE=$(DEVICE) --device=$(DEVICE) --device=$(DEVICE_NET) --device=$(UART_IP_DEV) --rm --name event-manager-$(PORT) $(SANCUS_IMAGE)
+	docker run -it -p $(PORT):$(PORT) -e PORT=$(PORT) -e DEVICE=$(DEVICE) --device=$(DEVICE) --device=$(UART_IP_DEV) --rm --name event-manager-$(PORT) $(SANCUS_IMAGE)
 
 attestation_manager:
 	docker run --rm --detach -p $(MANAGER_PORT):1234 $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
