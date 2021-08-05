@@ -20,8 +20,8 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### TrustZone
 
 - Our modified OPTEE OS must be installed on the machine. [More info](trustzone/README.md)
-- The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world. In addition, to stop the container one must enter the escape sequence `qqqq`
-  - It is not possible to stop the container using CTRL-C
+- The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world.
+  - At startup, the container automatically logs in as `root` and lauches the event manager 
 
 ### Native
 

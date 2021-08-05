@@ -2,6 +2,8 @@
 
 ## Build OP-TEE for QEMUv7
 
+This has to be done on the host OS. The root of the OP-TEE installation will then mounted as a volume on the container.
+
 - First, follow the first two steps [here](https://optee.readthedocs.io/en/latest/building/gits/build.html#get-and-build-the-solution)
 
 ```bash
@@ -25,15 +27,9 @@ make -j `nproc`
 
 ## Run a OPTEE instance using Docker
 
-```bashevent_manager_trustzone
-# <volume> absolute path of the root folder created in the previous phase
+```bash
+### <volume>: absolute path of the root folder created in the previous phase (default: /opt/optee)
 make event_manager_trustzone PORT=<port> TZ_VOLUME=<volume>
 ```
 
-### Run TZ event manager
-
-Login using `root` as user, then run `optee_example_event`
-
-## Close instance
-
-Enter the following escape sequence: `qqqq`
+The container automatically runs the Event Manager at startup.
