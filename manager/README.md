@@ -36,8 +36,8 @@ The target `make install` installs `sgx-attester` and `attman-cli`
 
 To attest SGX modules, we need to pass some data to the AM in advance.
 
-- This data is passed via the `init-sgx` command of `attman-cli`
-- We pass a keypair which is used in the same way as `manager_xxx.pem`
+The target `make init_manager` does the job using `attman-cli` under the hood
+- We pass a keypair which is used in the same way as `manager_xxx.pem` (see [above](#keys))
   - the public key is embedded in the SGX modules
   - the private key is used to establish trust from an SGX module to the AM
 - We also pass the IAS root certificate
