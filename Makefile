@@ -3,6 +3,7 @@ SANCUS_IMAGE        = gianlu33/event-manager-sancus:latest
 TRUSTZONE_IMAGE     = gianlu33/optee-deps:latest
 AESM_CLIENT_IMAGE   = gianlu33/aesm-client:latest
 MANAGER_IMAGE       = gianlu33/attestation-manager
+DEPLOYER_IMAGE      = gianlu33/reactive-tools:latest
 
 SGX_DEVICE         ?= /dev/isgx
 TZ_VOLUME          ?= /opt/optee
@@ -52,6 +53,15 @@ stop_manager:
 
 aesm_client:
 	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --name aesm-client $(AESM_CLIENT) >/dev/null 2>&1 || true
+
+pull_images:
+	docker pull $(DEPLOYER_IMAGE)
+	docker pull $(SGX_IMAGE)
+	docker pull $(SANCUS_IMAGE)
+	docker pull $(TRUSTZONE_IMAGE)
+	docker pull $(AESM_CLIENT_IMAGE)
+	docker pull $(MANAGER_IMAGE):sgx
+	docker pull $(MANAGER_IMAGE):native
 
 clean:
 	docker stop $(shell docker ps -q --filter name=event-manager-*) 2> /dev/null || true
