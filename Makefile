@@ -29,7 +29,7 @@ event_manager_trustzone: check_port
 	docker run --rm -v $(TZ_VOLUME):/opt/optee -e PORT=$(PORT) -p $(PORT):1236 --name event-manager-$(PORT) $(TRUSTZONE_IMAGE)
 
 event_manager_sancus: check_port check_device
-	docker run -it -p $(PORT):$(PORT) -e PORT=$(PORT) -e DEVICE=$(DEVICE) -e UART_DEVICE=$(UART_DEVICE) --device=$(DEVICE) --device=$(UART_DEVICE) --rm --name event-manager-$(PORT) $(SANCUS_IMAGE)
+	docker run -it -p $(PORT):$(PORT) -e PORT=$(PORT) --device=$(DEVICE):/dev/RIOT --device=$(UART_DEVICE):/dev/UART --rm --name event-manager-$(PORT) $(SANCUS_IMAGE)
 
 attestation_manager:
 	docker run --rm --detach -p $(MANAGER_PORT):1234 $(MANAGER_FLAGS) --name attestation-manager $(MANAGER_IMAGE):$(TAG)
