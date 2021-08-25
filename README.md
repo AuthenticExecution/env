@@ -8,10 +8,8 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### Sancus
 
 - A Sancus board must be connected to the machine through UART
-- The correct [Sancus image](sancus/sancus128.mcs) must be flashed in the board in advance
-- How to close the `screen` session of the Sancus Event Manager: press `CTRL-A`, then `\`, then `y`
-  - Do **not** stop the loading process of the EM with CTRL-C, otherwise the board would need a manual reset.
-
+- The correct [Sancus image](sancus/sancus128.mcs) must be flashed in the board in advance ([tutorial](https://github.com/sancus-tee/sancus-main#xstools-installation))
+- The provided Docker image automatically loads the [Event Manager binary](sancus/reactive.elf) through the first UART device and runs a TCP/IP server that mediates the communication between the board (through the second UART device) and the deployer and other EMs
 ### SGX
 
 - The machine in which the SGX Event Manager runs must support SGX, and the SGX driver and PSW must be installed, and the AESM service running
@@ -35,7 +33,7 @@ The Makefile contains targets to run the event managers of different types (SGX,
 - Essentially, each target runs a different Docker container.
 - run `make event_manager_{sgx,native,sancus,trustzone}` to run the event manager of a specific type. Arguments:
   - `PORT=<port>` for all the targets, to specify the port the event manager listens to (e.g., `5000`)
-  - `DEVICE=<device>` only for Sancus, to specify the UART device (e.g., `/dev/ttyUSB8`)
+  - `DEVICE=<device>` and `UART_DEVICE=<device>` only for Sancus, to specify the devices used for loading the binary and for the serial communication respectively (e.g., `/dev/ttyUSB8`)
   - `TZ_VOLUME=<volume>` only for TrustZone, to specify the path of the OPTEE installation
 
 ## Attestation Manager
