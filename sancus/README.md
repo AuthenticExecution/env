@@ -14,10 +14,10 @@
 
 ## Reactive application
 
-- `reactive.elf` is the latest Reactive application
-  - Led driver with secure I/O. Module key: `cb87f0020183c804cec653bb916f421e`
+- `reactive.elf` is the latest Reactive application, with no MMIO SMs
 - `reactive_debug.elf` is the same, but with debug outputs
-  - Led driver with secure I/O. Module key: `b57b5140997a6eb94f2dabececac6817`
+- `reactive_led.elf` is the latest Reactive application, using Secure I/O on an LED
+  - `led_driver` module key: `9901cdfbb0102e27467d763d7f66478c`
 - Commands:
   - Load application: `sancus-loader -device <device> <elf_file>`
   - Screen session: `screen <device> <baud_rate>`
