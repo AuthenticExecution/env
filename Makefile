@@ -52,7 +52,7 @@ stop_manager:
 	docker stop attestation-manager
 
 aesm_client:
-	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --name aesm-client $(AESM_CLIENT) >/dev/null 2>&1 || true
+	docker run --rm --detach --network=host -v /var/run/aesmd/:/var/run/aesmd --name aesm-client $(AESM_CLIENT_IMAGE) >/dev/null 2>&1 || true
 
 pull_images:
 	docker pull $(DEPLOYER_IMAGE)
