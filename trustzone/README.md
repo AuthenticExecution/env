@@ -16,8 +16,8 @@ repo init -u https://github.com/AuthenticExecution/optee_os.git -m manifest.xml
 repo sync -j4 --no-clone-bundle
 
 # get the event manager and put under `optee_examples`
-git clone https://github.com/sepidehpouyan/Authentic-Execution.git
-cp -r Authentic-Execution/Event optee_examples/
+git clone https://github.com/AuthenticExecution/event-manager-trustzone.git
+cp -r event-manager-trustzone/Event optee_examples/
 
 # build OPTEE
 cd build
