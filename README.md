@@ -26,7 +26,10 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### Native
 
 This is a "native" Event Manager running as a Linux process without TEE
-protection. No requirements are needed.
+protection. No particular requirements are needed.
+
+- **NOTE**: the `RDRAND` random generator _may_ be needed for some specific features (e.g., when using the Attestation Manager).
+  - to check if your machine supports `RDRAND` run: `cpuid | grep RDRAND`
 
 ## Getting started
 
