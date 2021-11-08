@@ -8,8 +8,9 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### Sancus
 
 - A Sancus board must be connected to the machine through UART
-- The correct [Sancus image](sancus/sancus128.mcs) must be flashed in the board in advance ([tutorial](https://github.com/sancus-tee/sancus-main#xstools-installation))
-- The provided Docker image automatically loads the [Event Manager binary](sancus/reactive.elf) through the first UART device and runs a TCP/IP server that mediates the communication between the board (through the second UART device) and the deployer and other EMs
+- The correct [Sancus image](https://github.com/AuthenticExecution/event-manager-sancus) must be flashed in the board in advance ([tutorial](https://github.com/sancus-tee/sancus-main#xstools-installation))
+- The provided Docker image automatically loads the Event Manager binary through the first UART device and runs a TCP/IP server that mediates the communication between the board (through the second UART device) and the deployer and other EMs
+
 ### SGX
 
 - The machine in which the SGX Event Manager runs must support SGX, and the SGX driver and PSW must be installed, and the AESM service running
@@ -17,7 +18,7 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 
 ### TrustZone
 
-- Our modified OPTEE OS must be installed on the machine. [More info](trustzone/README.md)
+- Our modified OPTEE OS must be installed on the machine. [More info](https://github.com/AuthenticExecution/event-manager-trustzone)
 - The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world.
   - At startup, the container automatically logs in as `root` and lauches the event manager 
 
@@ -26,24 +27,29 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 This is a "native" Event Manager running as a Linux process without TEE
 protection.
 
+## Getting started
 
-## Event managers
+Our [examples](https://github.com/AuthenticExecution/examples) are a good way to understand how the various components work together. Thanks to `docker` and `docker-compose`, it is very easy to deploy a new application locally.
+  - There are also _native_ examples that can be run on a normal Linux machine without any TEEs involved.
+
+## Components
+
+### Event managers
 
 The Makefile contains targets to run the event managers of different types (SGX, native, Sancus, TrustZone)
 - Essentially, each target runs a different Docker container.
 - run `make event_manager_{sgx,native,sancus,trustzone}` to run the event manager of a specific type. Arguments:
   - `PORT=<port>` for all the targets, to specify the port the event manager listens to (e.g., `5000`)
   - `DEVICE=<device>` and `UART_DEVICE=<device>` only for Sancus, to specify the devices used for loading the binary and for the serial communication respectively (e.g., `/dev/ttyUSB8`)
-  - `TZ_VOLUME=<volume>` only for TrustZone, to specify the path of the OPTEE installation
+  - `OPTEE_DIR=<volume>` only for TrustZone, to specify the path of the OPTEE installation
 
-## Attestation Manager
+### Attestation Manager
 
-The Attestation Manager can be optionally integrated in an Authentic Execution deployment. It is a component (SGX or native) responsible for the attestation of all the other modules
-  - If the AM is running, it can be used by specifying the flag `--manager` in a `reactive-tools` command
+The Attestation Manager is a component that can be optionally integrated in an Authentic Execution deployment. It is responsible for the attestation of all the other modules.
 
-[More info](manager/README.md)
+To see how it works, you can take a look at our [examples](https://github.com/AuthenticExecution/examples)
 
-## Reactive-tools
+### Admin console (reactive-tools)
 
 The container for `reactive-tools` can be launched with `make reactive-tools`
   - Argument `VOLUME=<volume>` can be specified to change the volume mounted to the container (by the fault, the current working directory)
