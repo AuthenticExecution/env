@@ -2,7 +2,7 @@
 
 To run the demos with SGX nodes and modules, you need to provide:
   - A private key used to sign the modules
-  - A configuration JSON file used during the Remote Attestation process, for the authentication with the Intel attestation server
+  - A configuration JSON file used during the Remote Attestation process, for the authentication with the Intel Attestation Server (IAS).
 
 ## Private key
 
@@ -18,3 +18,5 @@ To run the demos with SGX nodes and modules, you need to provide:
 - Copy the template provided here called `settings_template.json` to `settings.json` on this same folder.
 
 - Replace the fields `spid`, `primary_subscription_key` and `secondary_subscription_key` with the values retrieved previously.
+
+- Do **not** modify any other fields in the template.

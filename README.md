@@ -8,24 +8,25 @@ Makefile &amp; docs to run basic AuthenticExecution components (reactive-tools, 
 ### Sancus
 
 - A Sancus board must be connected to the machine through UART
-- The correct [Sancus image](https://github.com/AuthenticExecution/event-manager-sancus) must be flashed in the board in advance ([tutorial](https://github.com/sancus-tee/sancus-main#xstools-installation))
-- The provided Docker image automatically loads the Event Manager binary through the first UART device and runs a TCP/IP server that mediates the communication between the board (through the second UART device) and the deployer and other EMs
+- The correct [Sancus image](https://github.com/AuthenticExecution/event-manager-sancus) must be flashed in the board in advance ([tutorial](https://github.com/sancus-tee/sancus-main#xstools-installation)).
+  - Currently, we only support the image with 128 bits of security.
 
 ### SGX
 
-- The machine in which the SGX Event Manager runs must support SGX, and the SGX driver and PSW must be installed, and the AESM service running
-- EPID API keys for the attestation must be created and placed in a `settings.json` file. [More info](sgx/README.md)
+- SGX modules need a SGX-enabled machine and the AESM service up and running.
+- For the attestation of an SGX module, two steps are needed:
+  - Create a private key used to sign modules
+  - Generate EPID API keys and place them in a `settings.json` file. 
+  - [More info](sgx/README.md)
 
 ### TrustZone
 
 - Our modified OPTEE OS must be installed on the machine. [More info](https://github.com/AuthenticExecution/event-manager-trustzone)
-- The docker container of the Event Manager prints on the same terminal both the outputs of the normal and the secure world.
-  - At startup, the container automatically logs in as `root` and lauches the event manager 
 
 ### Native
 
 This is a "native" Event Manager running as a Linux process without TEE
-protection.
+protection. No requirements are needed.
 
 ## Getting started
 
@@ -40,7 +41,8 @@ The Makefile contains targets to run the event managers of different types (SGX,
 - Essentially, each target runs a different Docker container.
 - run `make event_manager_{sgx,native,sancus,trustzone}` to run the event manager of a specific type. Arguments:
   - `PORT=<port>` for all the targets, to specify the port the event manager listens to (e.g., `5000`)
-  - `DEVICE=<device>` and `UART_DEVICE=<device>` only for Sancus, to specify the devices used for loading the binary and for the serial communication respectively (e.g., `/dev/ttyUSB8`)
+  - `DEVICE=<device>` only for Sancus, to specify the device used for loading the binary (e.g., `/dev/ttyUSB8`)
+    - the device for the serial communication is by default the subsequent that the one specified, but it can be manually specified by setting the `UART_DEVICE` parameter.
   - `OPTEE_DIR=<volume>` only for TrustZone, to specify the path of the OPTEE installation
 
 ### Attestation Manager
@@ -62,9 +64,11 @@ The container for `reactive-tools` can be launched with `make reactive-tools`
   REACTIVE-TOOLS --verbose deploy <descriptor>
   ```
 
-## Run demos
+## Run examples manually
 
-- Run a terminal for each event manager, plus an additional terminal for `reactive-tools`.
+- First, launch an Event Manager for each node of the application
+  - according to the type of the node, run `make event_manager_{sgx,native,sancus,trustzone}`
+- Second, launch a new terminal for the admin console (see below)
 
 ### Commands
 
