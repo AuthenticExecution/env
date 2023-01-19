@@ -12,7 +12,7 @@ UART_DEVICE        ?= $(shell echo $(DEVICE) | perl -pe 's/(\d+)(?!.*\d+)/$$1+1/
 VOLUME             ?= $(shell pwd)
 
 reactive_tools:
-	docker run --rm --network=host -v $(VOLUME):/usr/src/app/ -v /usr/local/cargo/git:/usr/local/cargo/git -v /usr/local/cargo/registry:/usr/local/cargo/registry $(ADMIN_IMAGE)
+	docker run --rm -it --network=host -v $(VOLUME):/usr/src/app/ -v /usr/local/cargo/git:/usr/local/cargo/git -v /usr/local/cargo/registry:/usr/local/cargo/registry $(ADMIN_IMAGE) bash
 
 event_manager_native: check_port
 	docker run --rm --network=host -e EM_PORT=$(PORT) -e EM_LOG=info -e EM_THREADS=16 -e EM_PERIODIC_TASKS=false -e EM_SGX=false --name event-manager-$(PORT) $(SGX_IMAGE)
